@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for post in posts %}
+{% filter markdown %}
+{{ post }}
+{% endfilter %}
+{% endfor %}
+{% endblock %}
