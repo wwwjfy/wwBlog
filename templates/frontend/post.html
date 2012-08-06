@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for post in posts %}
-<div class="post">
 {% filter markdown %}
-{{ post.content }}
+{{ content }}
 {% endfilter %}
-</div>
-{% endfor %}
 {% endblock %}
