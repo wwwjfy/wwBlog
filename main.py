@@ -14,7 +14,7 @@ config = yaml.load(file('config.yaml', 'r'))
 app = Flask(__name__)
 md = Markdown(app, extensions=['attr_list', 'fenced_code'])
 
-legal_post_file_name = re.compile(r'^[0-9]+-.*\.md$')
+legal_post_file_name = re.compile(r'(^[0-9]+-.*)\.md$')
 
 
 @app.route('/')
@@ -27,13 +27,14 @@ def generate():
     _, _, preprocessed_names = os.walk('posts').next()
     names = []
     for name in preprocessed_names:
-        if legal_post_file_name.match(name) is not None:
-            names.append(name)
+        match = legal_post_file_name.match(name)
+        if match is not None:
+            names.append(match.group(1))
     utils.sort_post_names(names)
 
     posts = []
     for name in names:
-        with open('posts/%s' % name, 'r') as f:
+        with open('posts/%s.md' % name, 'r') as f:
             slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
             content = utils.postprocess_post_content(slug, content, True)
@@ -46,7 +47,7 @@ def generate():
                                     index_content.encode(config['encoding']))
 
     for name in names:
-        with open('posts/%s' % name, 'r') as f:
+        with open('posts/%s.md' % name, 'r') as f:
             slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
             content = utils.postprocess_post_content(slug, content, False)
