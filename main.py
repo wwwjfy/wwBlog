@@ -34,9 +34,10 @@ def generate():
     posts = []
     for name in names:
         with open('posts/%s' % name, 'r') as f:
+            slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
-            slug, content = utils.postprocess_post_content(content, True)
-            posts.append({'slug': slug, 'content': content})
+            content = utils.postprocess_post_content(slug, content, True)
+            posts.append(content)
 
     index_content = render_template('frontend/index.html',
                                     config=config,
@@ -44,11 +45,11 @@ def generate():
     file('site/index.html', 'w').write(
                                     index_content.encode(config['encoding']))
 
-    # os.mkdir('site/posts')
     for name in names:
         with open('posts/%s' % name, 'r') as f:
+            slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
-            slug, content = utils.postprocess_post_content(content, False)
+            content = utils.postprocess_post_content(slug, content, False)
             html_content = render_template('frontend/post.html',
                                            config=config,
                                            content=content)
