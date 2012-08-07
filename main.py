@@ -46,6 +46,10 @@ def generate():
     file('site/index.html', 'w').write(
                                     index_content.encode(config['encoding']))
 
+    not_found_content = render_template('404.html', config=config)
+    file('site/404.html', 'w').write(
+                                not_found_content.encode(config['encoding']))
+
     for name in names:
         with open('posts/%s.md' % name, 'r') as f:
             slug = name.split('-', 1)[1]
