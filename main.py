@@ -37,7 +37,7 @@ def generate():
         with open('posts/%s.md' % name, 'r') as f:
             slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
-            content = utils.postprocess_post_content(slug, content, True)
+            _, content = utils.postprocess_post_content(slug, content, True)
             posts.append(content)
 
     index_content = render_template('frontend/index.html',
@@ -50,9 +50,11 @@ def generate():
         with open('posts/%s.md' % name, 'r') as f:
             slug = name.split('-', 1)[1]
             content = f.read().decode(config['encoding'])
-            content = utils.postprocess_post_content(slug, content, False)
+            title, content = utils.postprocess_post_content(slug, content,
+                                                            False)
             html_content = render_template('frontend/post.html',
                                            config=config,
+                                           title=title,
                                            content=content)
             file('site/posts/%s.html' % slug, 'w').write(html_content.encode(config['encoding']))
 

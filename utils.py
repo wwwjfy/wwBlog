@@ -16,4 +16,4 @@ def postprocess_post_content(slug, content, title_with_link):
     if title_with_link:
         lines[0] = '# [%s](/posts/%s)' % (title, slug)
     lines.insert(3, '{: .time }')
-    return '\n'.join(lines)
+    return title, '\n'.join(lines)
