@@ -1,20 +1,13 @@
-import os
-import re
-
 from flask import Flask
 from flask import render_template
 from flaskext.markdown import Markdown
-import yaml
 
+from config import config
 import utils
 
 
-config = yaml.load(file('config.yaml', 'r'))
-
 app = Flask(__name__)
 md = Markdown(app, extensions=['attr_list', 'fenced_code'])
-
-legal_post_file_name = re.compile(r'(^[0-9]+-.*)\.md$')
 
 
 @app.route('/')
@@ -24,21 +17,7 @@ def index():
 
 @app.route('/generate')
 def generate():
-    _, _, preprocessed_names = os.walk('posts').next()
-    names = []
-    for name in preprocessed_names:
-        match = legal_post_file_name.match(name)
-        if match is not None:
-            names.append(match.group(1))
-    utils.sort_post_names(names)
-
-    posts = []
-    for name in names:
-        with open('posts/%s.md' % name, 'r') as f:
-            slug = name.split('-', 1)[1]
-            content = f.read().decode(config['encoding'])
-            _, content = utils.postprocess_post_content(slug, content, True)
-            posts.append(content)
+    posts = utils.get_posts()
 
     index_content = render_template('frontend/index.html',
                                     config=config,
@@ -50,17 +29,20 @@ def generate():
     file('site/404.html', 'w').write(
                                 not_found_content.encode(config['encoding']))
 
-    for name in names:
-        with open('posts/%s.md' % name, 'r') as f:
-            slug = name.split('-', 1)[1]
+    utils.clear_dir('site/posts')
+    infos = utils.get_post_infos()
+
+    for info in infos:
+        with open('posts/%s' % info['filename'], 'r') as f:
             content = f.read().decode(config['encoding'])
-            title, content = utils.postprocess_post_content(slug, content,
-                                                            False)
+            title, content = utils.postprocess_post_content(info['slug'],
+                                                            content, False)
             html_content = render_template('frontend/post.html',
                                            config=config,
                                            title=title,
                                            content=content)
-            file('site/posts/%s.html' % slug, 'w').write(html_content.encode(config['encoding']))
+            file('site/posts/%s.html' % info['slug'], 'w').write(
+                                    html_content.encode(config['encoding']))
 
     return 'Done!'
 
