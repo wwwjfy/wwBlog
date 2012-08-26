@@ -3,5 +3,12 @@
 {% block content %}
 
 <a href="/generate">Generate</a>
+<a href="/new">New post</a>
+
+<div>
+    {% for info in infos %}
+        <div><span><a href="/edit/{{ info['time'] }}-{{ info['slug'] }}">{{ info['title'] }}</a></span><span>{{ info['date'] }}</span></div>
+    {% endfor %}
+</div>
 
 {% endblock %}
