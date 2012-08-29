@@ -110,7 +110,7 @@ def new():
                                            'content': content}
         file_path = 'posts/%s-%s.md' % (post_time, slug)
         with open(file_path, 'w') as f:
-            f.write(file_content)
+            f.write(file_content.encode(config['encoding']))
 
         return ''
 
