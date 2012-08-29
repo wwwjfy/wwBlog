@@ -2,6 +2,7 @@ import time
 
 from flask import Flask
 from flask import render_template
+from flask import redirect
 from flask import request
 from flaskext.markdown import Markdown
 
@@ -30,7 +31,7 @@ def index():
             content = f.read().decode(config['encoding'])
             title = utils.get_title(content)
             info['title'] = title
-            info['date'] = time.strftime(config['datetime_format'], time.localtime(info['time']))
+            info['date'] = utils.date_localize_from_utc(info['time'])
     return render_template('admin/index.html', config=config, infos=infos)
 
 
@@ -81,7 +82,7 @@ def edit(time_slug):
             content = f.read().decode(config['encoding'])
             info['title'] = utils.get_title(content)
             info['content'] = '\n'.join(content.splitlines()[4:])
-            info['date'] = time.strftime(config['datetime_format'], time.localtime(info['time']))
+            info['date'] = utils.date_localize_from_utc(info['time'])
 
         return render_template('admin/edit.html',
                                config=config,
@@ -102,8 +103,7 @@ def new():
         content = request.form['content'].strip()
         slug = request.form['slug'].strip()
         post_time = int(time.time())
-        time_str = time.strftime(config['datetime_format'],
-                                 time.localtime(post_time))
+        time_str = utils.date_localize_from_utc(post_time)
 
         file_content = content_template % {'title': title,
                                            'time': time_str,
@@ -112,7 +112,7 @@ def new():
         with open(file_path, 'w') as f:
             f.write(file_content.encode(config['encoding']))
 
-        return ''
+        return redirect('/')
 
 
 if __name__ == '__main__':

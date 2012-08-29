@@ -1,5 +1,8 @@
+import datetime
 import os
 import re
+
+import pytz
 
 from config import config
 
@@ -64,3 +67,9 @@ def get_posts():
             content = postprocess_post_content(info['slug'], content, True)
             posts.append(content)
     return posts
+
+
+def date_localize_from_utc(utc):
+    date = datetime.datetime.fromtimestamp(utc,
+                                           pytz.timezone(config['timezone']))
+    return date.strftime(config['datetime_format'])

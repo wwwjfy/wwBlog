@@ -1,6 +1,7 @@
 title: "Flowing"
 subtitle: "Listen, Learn. And More..."
 posts_per_page: 5
+timezone: "Asia/Shanghai"
 datetime_format: "%Y-%m-%d %H:%M:%S"
 
 # Social information
@@ -10,4 +11,4 @@ email: "wwwjfy@gmail.com"
 google_analytics: "UA-33885770-1"
 
 encoding: "utf-8"
-debug: true
+debug: false
