@@ -80,7 +80,7 @@ def edit(time_slug):
         with open(file_path) as f:
             content = f.read().decode(config['encoding'])
             info['title'] = utils.get_title(content)
-            info['content'] = '\n'.join(content.splitlines()[5:])
+            info['content'] = '\n'.join(content.splitlines()[4:])
             info['date'] = time.strftime(config['datetime_format'], time.localtime(info['time']))
 
         return render_template('admin/edit.html',

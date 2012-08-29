@@ -15,11 +15,9 @@
     <div>title: <input type="text" name="title" value="{{ info.title }}"/></div>
     <div>date: <input type="text" name="date" value="{{ info.date }}" /></div>
     {% endif %}
-    <div>slug:<input type="text" name="slug" /></div>
+    <div>slug:<input type="text" name="slug" value="{{ info.slug }}"/></div>
     <div>
-        <textarea name="content" cols="80" rows="20">
-        {{ info.content }}
-        </textarea>
+        <textarea name="content" cols="80" rows="20">{{ info.content }}</textarea>
     </div>
     <div><input type="submit" value="Save" /></div>
     </form>
