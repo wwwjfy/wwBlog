@@ -41,11 +41,14 @@ def generate():
 
     index_content = render_template('frontend/index.html',
                                     config=config,
+                                    frontend=True,
                                     posts=posts)
     file('site/index.html', 'w').write(
                                     index_content.encode(config['encoding']))
 
-    not_found_content = render_template('404.html', config=config)
+    not_found_content = render_template('404.html',
+                                        config=config,
+                                        frontend=True)
     file('site/404.html', 'w').write(
                                 not_found_content.encode(config['encoding']))
 
@@ -60,6 +63,7 @@ def generate():
                                                             content, False)
             html_content = render_template('frontend/post.html',
                                            config=config,
+                                           frontend=True,
                                            title=title,
                                            content=content)
             file('site/posts/%s.html' % info['slug'], 'w').write(
