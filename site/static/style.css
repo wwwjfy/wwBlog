@@ -39,10 +39,12 @@ body {
     width: 20px;
 }
 
+#content {
+    min-height: 500px;
+}
+
 #footer {
-    position: absolute;
     width: 1000px;
-    bottom: 0;
     padding-bottom: 40px;
 }
 
