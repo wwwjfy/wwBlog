@@ -1,3 +1,4 @@
+import os
 import time
 
 from flask import Flask
@@ -74,25 +75,55 @@ def generate():
 
 @app.route('/edit/<time_slug>', methods=['GET', 'POST'])
 def edit(time_slug):
+    filename = '%s.md' % time_slug
+    file_path = 'posts/%s' % filename
+    if not os.path.exists(file_path):
+        # TODO: 404 page
+        return '', 404
     if request.method == 'GET':
-        filename = '%s.md' % time_slug
-        file_path = 'posts/%s' % filename
-        import os
-        if not os.path.exists(file_path):
-            # TODO: 404 page
-            return '', 404
         info = utils.parse_filename(filename)
         with open(file_path) as f:
             content = f.read().decode(config['encoding'])
-            info['title'] = utils.get_title(content)
-            info['content'] = '\n'.join(content.splitlines()[4:])
-            info['date'] = utils.date_localize_from_utc(info['time'])
+        info['title'] = utils.get_title(content)
+        info['content'] = '\n'.join(content.splitlines()[4:])
+        info['date'] = utils.date_localize_from_utc(info['time'])
 
         return render_template('admin/edit.html',
                                config=config,
                                info=info)
     elif request.method == 'POST':
-        return ''
+        result = utils.parse_filename(filename)
+        if not result:
+            return '', 404
+        with open(file_path) as f:
+            origin_content = f.read().decode(config['encoding'])
+        title = request.form['title'].strip()
+        date = request.form['date'].strip()
+        content = request.form['content'].strip()
+        slug = request.form['slug'].strip()
+
+        try:
+            post_time = utils.datetime2epoch(date)
+        except ValueError:
+            # TODO: flash message
+            return '', 404
+        time_str = utils.date_localize_from_utc(post_time)
+
+        file_to_remove = None
+        if post_time != result['time'] or slug != result['slug']:
+            file_to_remove = file_path
+            file_path = 'posts/%s-%s.md' % (post_time, slug)
+
+        file_content = content_template % {'title': title,
+                                           'time': time_str,
+                                           'content': content}
+        with open(file_path, 'w') as f:
+            f.write(file_content.encode(config['encoding']))
+
+        if file_to_remove:
+            os.remove(file_to_remove)
+
+        return redirect('/')
 
 
 @app.route('/new', methods=['GET', 'POST'])

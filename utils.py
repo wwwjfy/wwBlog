@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import os
 import re
@@ -73,3 +74,11 @@ def date_localize_from_utc(utc):
     date = datetime.datetime.fromtimestamp(utc,
                                            pytz.timezone(config['timezone']))
     return date.strftime(config['datetime_format'])
+
+
+def datetime2epoch(date_str):
+    d = datetime.datetime.strptime(date_str, config['datetime_format'])
+    tz = pytz.timezone(config['timezone'])
+    d = tz.localize(d)
+    return calendar.timegm(d.utctimetuple())
+
