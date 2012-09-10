@@ -1,3 +1,4 @@
+import math
 import os
 import time
 
@@ -39,13 +40,21 @@ def index():
 @app.route('/generate')
 def generate():
     posts = utils.get_posts()
+    ppp = config['posts_per_page']
+    pages = int(math.ceil(len(posts) / ppp))
 
-    index_content = render_template('frontend/index.html',
-                                    config=config,
-                                    frontend=True,
-                                    posts=posts)
-    file('site/index.html', 'w').write(
-                                    index_content.encode(config['encoding']))
+    utils.clear_dir('site/page')
+    for i in range(pages):
+        page_content = render_template('frontend/index.html',
+                                       config=config,
+                                       frontend=True,
+                                       current=i+1,
+                                       first=(i==0),
+                                       last=(i==pages-1),
+                                       posts=posts[i*ppp:(i+1)*ppp])
+        file('site/page/%s.html' % (i+1), 'w').write(page_content.encode(config['encoding']))
+        if i == 0:
+            file('site/index.html', 'w').write(page_content.encode(config['encoding']))
 
     not_found_content = render_template('404.html',
                                         config=config,

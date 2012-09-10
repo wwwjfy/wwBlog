@@ -3,9 +3,17 @@
 {% block content %}
 {% for post in posts %}
 <div class="post">
-{% filter markdown %}
+{% filter markdown -%}
 {{ post }}
-{% endfilter %}
+{%- endfilter %}
 </div>
 {% endfor %}
+<div id="navigator">
+{% if not first  -%}
+<div id="page_prev"><a href="/page/{{ current - 1 }}">&lt;&lt; Prev</a></div>
+{%- endif %}
+{% if not last -%}
+<div id="page_next"><a href="/page/{{ current + 1 }}">Next &gt;&gt;</a></div>
+{%- endif %}
+</div>
 {% endblock %}

@@ -3,8 +3,7 @@ a:link {
 }
 
 body {
-    background-color: #fbfbf0;
-    background-image: url("/static/whitey.png");
+    background: #fbfbf0 url("/static/whitey.png");
     width: 1000px;
     margin-left: auto;
     margin-right: auto;
@@ -43,6 +42,18 @@ body {
     min-height: 500px;
 }
 
+#content #navigator {
+    overflow: auto;
+}
+
+#content #page_prev {
+    float: left;
+}
+
+#content #page_next {
+    float: right;
+}
+
 #footer {
     width: 1000px;
     padding-bottom: 40px;
@@ -55,9 +66,8 @@ body {
 
 hr {
     height: 0;
-    border-style: dashed;
-    border-width: 1px 0 0 0;
-    border-color: #808080;
+    border: 0 dashed #808080;
+    border-top-width: 1px;
 }
 
 .post {
