@@ -1,14 +1,16 @@
-title: "Flowing"
-subtitle: "Listen, Learn. And More..."
+url_root:
+title: "Untitled"
+subtitle: "Unsubtitled"
 posts_per_page: 5
 timezone: "Asia/Shanghai"
 datetime_format: "%Y-%m-%d %H:%M:%S"
 
 # Social information
-twitter_username: "wwwjfy"
-github_username: "wwwjfy"
-email: "wwwjfy@gmail.com"
-google_analytics: "UA-33885770-1"
+twitter_username:
+github_username:
+email:
+google_analytics:
 
 encoding: "utf-8"
-debug: false
+debug: true
+production: false

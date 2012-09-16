@@ -15,9 +15,15 @@
         <div id="title">{{ config.title }}</div>
         <div id="subtitle">{{ config.subtitle }}</div>
         <div id="contacts">
+{% if config.twitter_username -%}
             <a href="https://twitter.com/{{ config.twitter_username }}"><img src="/static/twitter.png" class="icon" alt="twitter" /></a>
+{%- endif %}
+{% if config.github_username -%}
             <a href="https://github.com/{{ config.github_username }}"><img src="/static/github.png" class="icon" alt="github" /></a>
+{%- endif  %}
+{% if config.email -%}
             <a href="mailto:{{ config.email }}?subject=Hello"><img src="/static/email.png" class="icon" alt="email" /></a>
+{%- endif  %}
             <a href="/posts.rss"><img src="/static/rss.png" class="icon" alt="rss" /></a>
         </div>
     </div>
@@ -27,7 +33,7 @@
         <hr />
         <div id="copyright"><span>&copy; 2012 Powered by <a href="https://github.com/wwwjfy/wwBlog" target="_blank">wwBlog</a></span></div>
     </div>
-{% if frontend and config.google_analytics %}
+{% if config.production and frontend and config.google_analytics %}
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
