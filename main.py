@@ -1,5 +1,6 @@
 import math
 import os
+from urlparse import urljoin
 import time
 
 from flask import Flask
@@ -7,6 +8,7 @@ from flask import render_template
 from flask import redirect
 from flask import request
 from flaskext.markdown import Markdown
+from werkzeug.contrib.atom import AtomFeed
 
 from config import config
 import utils
@@ -22,6 +24,10 @@ content_template = """\
 
 app = Flask(__name__)
 Markdown(app, extensions=['attr_list', 'fenced_code'])
+
+
+def make_external(url):
+    return urljoin(config['url_root'], url)
 
 
 @app.route('/')
@@ -48,13 +54,15 @@ def generate():
         page_content = render_template('frontend/index.html',
                                        config=config,
                                        frontend=True,
-                                       current=i+1,
-                                       first=(i==0),
-                                       last=(i==pages-1),
-                                       posts=posts[i*ppp:(i+1)*ppp])
-        file('site/page/%s.html' % (i+1), 'w').write(page_content.encode(config['encoding']))
+                                       current=i + 1,
+                                       first=(i == 0),
+                                       last=(i == pages - 1),
+                                       posts=posts[i * ppp:(i + 1) * ppp])
+        file('site/page/%s.html' % (i + 1), 'w').write(
+                                    page_content.encode(config['encoding']))
         if i == 0:
-            file('site/index.html', 'w').write(page_content.encode(config['encoding']))
+            file('site/index.html', 'w').write(
+                                    page_content.encode(config['encoding']))
 
     not_found_content = render_template('404.html',
                                         config=config,
@@ -65,6 +73,9 @@ def generate():
     utils.clear_dir('site/posts')
     infos = utils.get_post_infos()
 
+    feed = AtomFeed(config['title'],
+                    feed_url=config['url_root'] + '/posts.atom',
+                    url=config['url_root'])
     for info in infos:
         with open('posts/%s' % info['filename'], 'r') as f:
             content = f.read().decode(config['encoding'])
@@ -78,6 +89,18 @@ def generate():
                                            content=content)
             file('site/posts/%s.html' % info['slug'], 'w').write(
                                     html_content.encode(config['encoding']))
+
+            feed_content = render_template('feed.html',
+                                           config=config,
+                                           content=content)
+            feed.add(title, feed_content, content_type='html',
+                     url=make_external('/posts/' + info['slug']),
+                     author='Tony Wang',
+                     published=utils.date_localize_from_utc(info['time'],
+                                                            True),
+                     updated=utils.date_localize_from_utc(info['time'], True))
+
+    file('site/posts.atom', 'w').write(str(feed.get_response().iter_encoded(config['encoding']).next()))
 
     return 'Done!'
 
@@ -104,8 +127,6 @@ def edit(time_slug):
         result = utils.parse_filename(filename)
         if not result:
             return '', 404
-        with open(file_path) as f:
-            origin_content = f.read().decode(config['encoding'])
         title = request.form['title'].strip()
         date = request.form['date'].strip()
         content = request.form['content'].strip()

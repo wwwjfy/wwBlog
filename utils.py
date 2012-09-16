@@ -70,10 +70,13 @@ def get_posts():
     return posts
 
 
-def date_localize_from_utc(utc):
+def date_localize_from_utc(utc, origin=False):
     date = datetime.datetime.fromtimestamp(utc,
                                            pytz.timezone(config['timezone']))
-    return date.strftime(config['datetime_format'])
+    if origin:
+        return date
+    else:
+        return date.strftime(config['datetime_format'])
 
 
 def datetime2epoch(date_str):
@@ -81,4 +84,3 @@ def datetime2epoch(date_str):
     tz = pytz.timezone(config['timezone'])
     d = tz.localize(d)
     return calendar.timegm(d.utctimetuple())
-
