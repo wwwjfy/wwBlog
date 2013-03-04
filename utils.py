@@ -56,6 +56,7 @@ def clear_dir(directory):
         for filename in filenames:
             if not filename.startswith('.'):
                 os.remove(os.path.join(dirpath, filename))
+        break
 
 
 def get_posts():
