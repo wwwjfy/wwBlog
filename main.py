@@ -47,7 +47,7 @@ def index():
 def generate():
     posts = utils.get_posts()
     ppp = config['posts_per_page']
-    pages = int(math.ceil(len(posts) / ppp))
+    pages = int(math.ceil(float(len(posts)) / ppp))
 
     utils.clear_dir('site/page')
     for i in range(pages):
